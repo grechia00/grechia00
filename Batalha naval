@@ -1,0 +1,274 @@
+#include <stdio.h>
+#include <stdlib.h>
+#include <time.h>
+
+#define TAM_NOVATO 5
+#define TAM_AVENTUREIRO 10
+#define TAM_MESTRE 15
+
+// Função para limpar o buffer de entrada
+void limparBuffer() {
+    int c;
+    while ((c = getchar()) != '\n' && c != EOF);
+}
+
+// Nível Novato - Tabuleiro 5x5 com dois navios
+void nivelNovato() {
+    printf("=== NÍVEL NOVATO ===\n");
+    printf("Tabuleiro 5x5 com dois navios (vertical e horizontal)\n\n");
+    
+    int tabuleiro[TAM_NOVATO][TAM_NOVATO] = {0};
+    
+    // Posicionar navio horizontal (3 posições)
+    int navioHorizontalX = 1, navioHorizontalY = 2;
+    for (int i = 0; i < 3; i++) {
+        if (navioHorizontalY + i < TAM_NOVATO) {
+            tabuleiro[navioHorizontalX][navioHorizontalY + i] = 1;
+        }
+    }
+    
+    // Posicionar navio vertical (3 posições)
+    int navioVerticalX = 3, navioVerticalY = 1;
+    for (int i = 0; i < 3; i++) {
+        if (navioVerticalX + i < TAM_NOVATO) {
+            tabuleiro[navioVerticalX + i][navioVerticalY] = 1;
+        }
+    }
+    
+    // Exibir coordenadas dos navios
+    printf("Coordenadas dos navios:\n");
+    printf("Navio horizontal: ");
+    for (int i = 0; i < 3; i++) {
+        if (navioHorizontalY + i < TAM_NOVATO) {
+            printf("(%d, %d) ", navioHorizontalX, navioHorizontalY + i);
+        }
+    }
+    printf("\n");
+    
+    printf("Navio vertical: ");
+    for (int i = 0; i < 3; i++) {
+        if (navioVerticalX + i < TAM_NOVATO) {
+            printf("(%d, %d) ", navioVerticalX + i, navioVerticalY);
+        }
+    }
+    printf("\n\n");
+    
+    // Exibir tabuleiro
+    printf("Tabuleiro (0 = água, 1 = navio):\n");
+    for (int i = 0; i < TAM_NOVATO; i++) {
+        for (int j = 0; j < TAM_NOVATO; j++) {
+            printf("%d ", tabuleiro[i][j]);
+        }
+        printf("\n");
+    }
+}
+
+// Nível Aventureiro - Tabuleiro 10x10 com quatro navios
+void nivelAventureiro() {
+    printf("\n=== NÍVEL AVENTUREIRO ===\n");
+    printf("Tabuleiro 10x10 com quatro navios\n\n");
+    
+    int tabuleiro[TAM_AVENTUREIRO][TAM_AVENTUREIRO] = {0};
+    
+    // Posicionar navio horizontal (4 posições)
+    for (int i = 0; i < 4; i++) {
+        tabuleiro[2][1 + i] = 1;
+    }
+    
+    // Posicionar navio vertical (4 posições)
+    for (int i = 0; i < 4; i++) {
+        tabuleiro[4 + i][8] = 1;
+    }
+    
+    // Posicionar navio diagonal direita (3 posições)
+    for (int i = 0; i < 3; i++) {
+        tabuleiro[7 + i][2 + i] = 1;
+    }
+    
+    // Posicionar navio diagonal esquerda (3 posições)
+    for (int i = 0; i < 3; i++) {
+        tabuleiro[1 + i][7 - i] = 1;
+    }
+    
+    // Exibir tabuleiro
+    printf("Tabuleiro (0 = água, 1 = navio):\n");
+    for (int i = 0; i < TAM_AVENTUREIRO; i++) {
+        for (int j = 0; j < TAM_AVENTUREIRO; j++) {
+            printf("%d ", tabuleiro[i][j]);
+        }
+        printf("\n");
+    }
+}
+
+// Função para aplicar padrão de cone em uma posição
+void aplicarCone(int tabuleiro[][TAM_MESTRE], int x, int y) {
+    int padrao[3][5] = {
+        {0, 0, 1, 0, 0},
+        {0, 1, 1, 1, 0},
+        {1, 1, 1, 1, 1}
+    };
+    
+    for (int i = 0; i < 3; i++) {
+        for (int j = 0; j < 5; j++) {
+            int novoi = x + i - 1; // Centralizar o padrão
+            int novoji = y + j - 2; // Centralizar o padrão
+            
+            if (novoi >= 0 && novoi < TAM_MESTRE && novoji >= 0 && novoji < TAM_MESTRE) {
+                if (padrao[i][j] == 1) {
+                    tabuleiro[novoi][novoji] = 1;
+                }
+            }
+        }
+    }
+}
+
+// Função para aplicar padrão de cruz em uma posição
+void aplicarCruz(int tabuleiro[][TAM_MESTRE], int x, int y) {
+    int padrao[3][5] = {
+        {0, 0, 1, 0, 0},
+        {1, 1, 1, 1, 1},
+        {0, 0, 1, 0, 0}
+    };
+    
+    for (int i = 0; i < 3; i++) {
+        for (int j = 0; j < 5; j++) {
+            int novoi = x + i - 1; // Centralizar o padrão
+            int novoji = y + j - 2; // Centralizar o padrão
+            
+            if (novoi >= 0 && novoi < TAM_MESTRE && novoji >= 0 && novoji < TAM_MESTRE) {
+                if (padrao[i][j] == 1) {
+                    tabuleiro[novoi][novoji] = 1;
+                }
+            }
+        }
+    }
+}
+
+// Função para aplicar padrão de octaedro em uma posição
+void aplicarOctaedro(int tabuleiro[][TAM_MESTRE], int x, int y) {
+    int padrao[3][5] = {
+        {0, 0, 1, 0, 0},
+        {0, 1, 1, 1, 0},
+        {0, 0, 1, 0, 0}
+    };
+    
+    for (int i = 0; i < 3; i++) {
+        for (int j = 0; j < 5; j++) {
+            int novoi = x + i - 1; // Centralizar o padrão
+            int novoji = y + j - 2; // Centralizar o padrão
+            
+            if (novoi >= 0 && novoi < TAM_MESTRE && novoji >= 0 && novoji < TAM_MESTRE) {
+                if (padrao[i][j] == 1) {
+                    tabuleiro[novoi][novoji] = 1;
+                }
+            }
+        }
+    }
+}
+
+// Nível Mestre - Tabuleiro 15x15 com habilidades especiais
+void nivelMestre() {
+    printf("\n=== NÍVEL MESTRE ===\n");
+    printf("Tabuleiro 15x15 com habilidades especiais\n\n");
+    
+    int tabuleiro[TAM_MESTRE][TAM_MESTRE] = {0};
+    
+    // Aplicar habilidades especiais em posições específicas
+    aplicarCone(tabuleiro, 5, 5);
+    aplicarCruz(tabuleiro, 10, 10);
+    aplicarOctaedro(tabuleiro, 3, 12);
+    
+    // Exibir tabuleiro
+    printf("Tabuleiro com habilidades especiais (0 = não afetado, 1 = afetado):\n");
+    for (int i = 0; i < TAM_MESTRE; i++) {
+        for (int j = 0; j < TAM_MESTRE; j++) {
+            printf("%d ", tabuleiro[i][j]);
+        }
+        printf("\n");
+    }
+    
+    // Exibir padrões separadamente
+    printf("\nPadrões das habilidades:\n");
+    
+    printf("\nCone:\n");
+    int cone[3][5] = {
+        {0, 0, 1, 0, 0},
+        {0, 1, 1, 1, 0},
+        {1, 1, 1, 1, 1}
+    };
+    for (int i = 0; i < 3; i++) {
+        for (int j = 0; j < 5; j++) {
+            printf("%d ", cone[i][j]);
+        }
+        printf("\n");
+    }
+    
+    printf("\nCruz:\n");
+    int cruz[3][5] = {
+        {0, 0, 1, 0, 0},
+        {1, 1, 1, 1, 1},
+        {0, 0, 1, 0, 0}
+    };
+    for (int i = 0; i < 3; i++) {
+        for (int j = 0; j < 5; j++) {
+            printf("%d ", cruz[i][j]);
+        }
+        printf("\n");
+    }
+    
+    printf("\nOctaedro:\n");
+    int octaedro[3][5] = {
+        {0, 0, 1, 0, 0},
+        {0, 1, 1, 1, 0},
+        {0, 0, 1, 0, 0}
+    };
+    for (int i = 0; i < 3; i++) {
+        for (int j = 0; j < 5; j++) {
+            printf("%d ", octaedro[i][j]);
+        }
+        printf("\n");
+    }
+}
+
+int main() {
+    int opcao;
+    
+    printf("Batalha Naval - Três Níveis de Complexidade\n");
+    printf("===========================================\n");
+    
+    do {
+        printf("\nEscolha o nível:\n");
+        printf("1 - Nível Novato (5x5)\n");
+        printf("2 - Nível Aventureiro (10x10)\n");
+        printf("3 - Nível Mestre (15x15 com habilidades)\n");
+        printf("0 - Sair\n");
+        printf("Opção: ");
+        
+        scanf("%d", &opcao);
+        limparBuffer();
+        
+        switch (opcao) {
+            case 1:
+                nivelNovato();
+                break;
+            case 2:
+                nivelAventureiro();
+                break;
+            case 3:
+                nivelMestre();
+                break;
+            case 0:
+                printf("Saindo...\n");
+                break;
+            default:
+                printf("Opção inválida!\n");
+        }
+        
+        if (opcao != 0) {
+            printf("\nPressione Enter para continuar...");
+            limparBuffer();
+        }
+    } while (opcao != 0);
+    
+    return 0;
+}
