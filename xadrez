@@ -1,0 +1,142 @@
+#include <stdio.h>
+
+// =========================
+// Constantes de Movimentos
+// =========================
+#define BISPO_PASSOS 5
+#define TORRE_PASSOS 5
+#define RAINHA_PASSOS 8
+
+// =========================
+// Funções Recursivas (Nível Mestre)
+// =========================
+void moverBispo(int passos) {
+    if (passos == 0) return;
+    printf("Cima\n");
+    printf("Direita\n");
+    moverBispo(passos - 1); // chamada recursiva
+}
+
+void moverTorre(int passos) {
+    if (passos == 0) return;
+    printf("Direita\n");
+    moverTorre(passos - 1);
+}
+
+void moverRainha(int passos) {
+    if (passos == 0) return;
+    printf("Esquerda\n");
+    moverRainha(passos - 1);
+}
+
+// =========================
+// Funções dos Níveis
+// =========================
+void nivelNovato() {
+    printf("\n=== 🏅 NÍVEL NOVATO ===\n");
+
+    // Bispo - usando FOR
+    printf("\nMovimento do Bispo:\n");
+    for (int i = 0; i < BISPO_PASSOS; i++) {
+        printf("Cima\n");
+        printf("Direita\n");
+    }
+
+    // Torre - usando WHILE
+    printf("\nMovimento da Torre:\n");
+    int i = 0;
+    while (i < TORRE_PASSOS) {
+        printf("Direita\n");
+        i++;
+    }
+
+    // Rainha - usando DO WHILE
+    printf("\nMovimento da Rainha:\n");
+    int j = 0;
+    do {
+        printf("Esquerda\n");
+        j++;
+    } while (j < RAINHA_PASSOS);
+}
+
+void nivelAventureiro() {
+    printf("\n=== 🏅 NÍVEL AVENTUREIRO ===\n");
+    printf("Movimento do Cavalo (L: 2 Baixo + 1 Esquerda):\n");
+
+    // Loop externo simula uma jogada em L
+    for (int k = 0; k < 1; k++) {
+        // Primeiro movimento: duas casas para baixo
+        for (int x = 0; x < 2; x++) {
+            printf("Baixo\n");
+        }
+
+        // Depois: uma casa para esquerda (while)
+        int y = 0;
+        while (y < 1) {
+            printf("Esquerda\n");
+            y++;
+        }
+    }
+}
+
+void nivelMestre() {
+    printf("\n=== 🥇 NÍVEL MESTRE ===\n");
+
+    // Bispo - recursivo
+    printf("\nMovimento do Bispo:\n");
+    moverBispo(BISPO_PASSOS);
+
+    // Torre - recursivo
+    printf("\nMovimento da Torre:\n");
+    moverTorre(TORRE_PASSOS);
+
+    // Rainha - recursivo
+    printf("\nMovimento da Rainha:\n");
+    moverRainha(RAINHA_PASSOS);
+
+    // Cavalo - L para cima + direita (loop múltiplo com break/continue)
+    printf("\nMovimento do Cavalo (L: 2 Cima + 1 Direita):\n");
+    for (int a = 0, b = 0; a < 2 || b < 1; ) {
+        if (a < 2) {
+            printf("Cima\n");
+            a++;
+            continue; // volta até completar o movimento para cima
+        }
+        if (b < 1) {
+            printf("Direita\n");
+            b++;
+        }
+        if (a == 2 && b == 1) break; // encerra o L
+    }
+}
+
+// =========================
+// Programa Principal
+// =========================
+int main() {
+    int escolha;
+
+    printf("=== DESAFIO DE XADREZ - MATECHECK ===\n");
+    printf("Escolha o nível de dificuldade:\n");
+    printf("1 - Novato\n");
+    printf("2 - Aventureiro\n");
+    printf("3 - Mestre\n");
+    printf("Digite sua escolha: ");
+    scanf("%d", &escolha);
+
+    switch (escolha) {
+        case 1:
+            nivelNovato();
+            break;
+        case 2:
+            nivelAventureiro();
+            break;
+        case 3:
+            nivelMestre();
+            break;
+        default:
+            printf("\nOpção inválida! Escolha entre 1, 2 ou 3.\n");
+    }
+
+    return 0;
+}
