@@ -1,0 +1,124 @@
+def cadastrar_carta():
+    """Cadastro de uma carta de cidade"""
+    estado = input("Digite o estado: ")
+    codigo = input("Digite o código da carta: ")
+    cidade = input("Digite o nome da cidade: ")
+    populacao = int(input("Digite a população: "))
+    area = float(input("Digite a área (km²): "))
+    pib = float(input("Digite o PIB (em bilhões): "))
+    pontos_turisticos = int(input("Digite o número de pontos turísticos: "))
+
+    densidade = populacao / area
+
+    return {
+        "estado": estado,
+        "codigo": codigo,
+        "cidade": cidade,
+        "populacao": populacao,
+        "area": area,
+        "pib": pib,
+        "pontos_turisticos": pontos_turisticos,
+        "densidade": densidade
+    }
+
+def exibir_carta(carta):
+    """Exibe as informações de uma carta"""
+    print("\n--- Carta ---")
+    for chave, valor in carta.items():
+        print(f"{chave.capitalize()}: {valor}")
+
+def comparar(c1, c2, atributo):
+    """Comparação simples de um atributo"""
+    if atributo == "densidade":
+        return c1 if c1[atributo] < c2[atributo] else c2
+    else:
+        return c1 if c1[atributo] > c2[atributo] else c2
+
+def comparar_dois(c1, c2, a1, a2):
+    """Comparação de dois atributos (nível Mestre)"""
+    if a1 == "densidade":
+        if c1[a1] < c2[a1]:
+            return c1
+        elif c1[a1] > c2[a1]:
+            return c2
+        else:  
+            return comparar(c1, c2, a2)
+    else:
+        if c1[a1] > c2[a1]:
+            return c1
+        elif c1[a1] < c2[a1]:
+            return c2
+        else:
+            return comparar(c1, c2, a2)
+
+def menu():
+    """Menu de escolha de atributo"""
+    print("\nEscolha o atributo para comparação:")
+    print("1 - População")
+    print("2 - Área")
+    print("3 - PIB")
+    print("4 - Pontos turísticos")
+    print("5 - Densidade populacional")
+    opcao = int(input("Digite sua opção: "))
+
+    match opcao:
+        case 1: return "populacao"
+        case 2: return "area"
+        case 3: return "pib"
+        case 4: return "pontos_turisticos"
+        case 5: return "densidade"
+        case _: return None
+
+def jogo_novato(c1, c2):
+    print("\n--- Modo Novato ---")
+    atributo_escolhido = "populacao"  # fixo
+    vencedora = comparar(c1, c2, atributo_escolhido)
+    print(f"\nCarta vencedora com base em {atributo_escolhido}: {vencedora['cidade']}")
+
+def jogo_aventureiro(c1, c2):
+    print("\n--- Modo Aventureiro ---")
+    atributo = menu()
+    if atributo:
+        vencedora = comparar(c1, c2, atributo)
+        print(f"\nCarta vencedora com base em {atributo}: {vencedora['cidade']}")
+    else:
+        print("Opção inválida.")
+
+def jogo_mestre(c1, c2):
+    print("\n--- Modo Mestre ---")
+    atributo1 = menu()
+    atributo2 = menu()
+    if atributo1 and atributo2:
+        vencedora = comparar_dois(c1, c2, atributo1, atributo2)
+        if vencedora:
+            print(f"\nCarta vencedora considerando {atributo1} e {atributo2}: {vencedora['cidade']}")
+        else:
+            print("\nEmpate total!")
+    else:
+        print("Opções inválidas.")
+
+# --------------------------
+# Programa principal
+# --------------------------
+print("=== Super Trunfo - Países ===")
+
+print("\nCadastro da Carta 1:")
+carta1 = cadastrar_carta()
+exibir_carta(carta1)
+
+print("\nCadastro da Carta 2:")
+carta2 = cadastrar_carta()
+exibir_carta(carta2)
+
+print("\nEscolha o nível do jogo:")
+print("1 - Novato")
+print("2 - Aventureiro")
+print("3 - Mestre")
+
+nivel = int(input("Digite sua opção: "))
+
+match nivel:
+    case 1: jogo_novato(carta1, carta2)
+    case 2: jogo_aventureiro(carta1, carta2)
+    case 3: jogo_mestre(carta1, carta2)
+    case _: print("Nível inválido.")
